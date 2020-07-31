@@ -8,10 +8,7 @@ const axios = require('axios');
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 
-
-
 app.use(express.static(path.join(__dirname, '/dist/inventory-checker')));
-
 app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/dist/inventory-checker/index.html');
 });
@@ -25,24 +22,25 @@ setInterval(apiCall, 60000);
 let previousItemList = [];
 
 function apiCall() {
-  axios.get('https://stickthison.com/collections/morale-patches').then(urlResponse => {
-    // axios.get('https://www.spiritussystems.com/shop-all/?sort=best-selling&page=1').then(urlResponse => {
+  // axios.get('https://stickthison.com/collections/morale-patches').then(urlResponse => {
+    axios.get('https://www.spiritussystems.com/shop-all/?sort=best-selling&page=1').then(urlResponse => {
     console.log('Spiritus: Making call');
     let currentItemList = [];
     const $ = cherrio.load(urlResponse.data);
-    // $('article.product-item').each((i, element) => {
-    // const productTitle = $(element).find("div.product-item-details h3 a").attr('title')
-    // const productLink = $(element).find("figure.product-item-thumbnail a").attr('href');
-    // const OOS = $(element).find("div.product-item-details div").hasClass('alert-message');
-    // currentItemList.push({title: productTitle, outOfStock: OOS, productLink: productLink});
+
+    $('article.product-item').each((i, element) => {
+    const productTitle = $(element).find("div.product-item-details h3 a").attr('title')
+    const productLink = $(element).find("figure.product-item-thumbnail a").attr('href');
+    const OOS = $(element).find("div.product-item-details div").hasClass('alert-message');
+    currentItemList.push({title: productTitle, outOfStock: OOS, productLink: productLink});
 
     /**
      * STICKTHISON SCRAPER
      */
-    $('div.one-third.column').each((i, element) => {
-      const productTitle = $(element).find("a div.info span.title").text();
-      const OOS = $(element).find("a div.info span.price span").hasClass('sold_out')
-      currentItemList.push({title: productTitle, outOfStock: OOS, productLink: 'N/A'});
+    // $('div.one-third.column').each((i, element) => {
+    //   const productTitle = $(element).find("a div.info span.title").text();
+    //   const OOS = $(element).find("a div.info span.price span").hasClass('sold_out')
+    //   currentItemList.push({title: productTitle, outOfStock: OOS, productLink: 'N/A'});
 
     })
 
