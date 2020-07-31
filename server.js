@@ -6,8 +6,8 @@ const axios = require('axios');
 const nodemailer = require("nodemailer");
 require('dotenv').config();
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+app.get('/*', (req, res) => {
+  res.sendFile(__dirname + '/dist/inventory-checker/index.html');
 });
 
 console.log('Starting Node Server');
@@ -128,7 +128,9 @@ io.on('connection', (socket) => {
 });
 
 http.listen(process.env.PORT || 3000, () => {
-  console.log('listening on ', process.env.PORT);
-  // console.log('Mail UN: ', process.env.MAIL_UN);
-  // console.log('Mail UN: ', process.env.MAIL_PW);
+  console.log('listening on ', process.env.PORT || 3000);
+  console.log('Mail UN: ', process.env.MAIL_UN);
+  console.log('Mail PW: ', process.env.MAIL_PW);
+  console.log('Dir: ', __dirname + '/dist/inventory-checker/index.html');
+
 });
