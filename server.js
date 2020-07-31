@@ -3,6 +3,8 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const cherrio = require("cheerio");
 const axios = require('axios');
+const nodemailer = require("nodemailer");
+const env = require('dotenv').config();
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -28,8 +30,6 @@ function apiCall() {
           const productTitle = $(element).find("a div.info span.title").text();
           const OOS = $(element).find("a div.info span.price span").hasClass('sold_out')
           currentItemList.push({title: productTitle, outOfStock: OOS});
-
-
     })
 
     if (previousItemList.length === 0) {
@@ -48,6 +48,7 @@ function apiCall() {
         console.log('no change!');
         // return 'No Change In Inventory!';
         io.emit('Spiritus Broadcast', `No Change In Inventory`)
+
         // console.log(inventory);
       } else {
         // console.log(inventoryChange);
@@ -56,6 +57,8 @@ function apiCall() {
           let oos = inventoryChange[i].outOfStock;
           console.log('INVENTORY ALERT: ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO'));
           io.emit('Spiritus Broadcast', ('INVENTORY ALERT: ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO')))
+          main('INVENTORY ALERT: ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO')).catch(console.error);
+
           // return ('INVENTORY ALERT: ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO'));
         }
         previousItemList = currentItemList;
@@ -64,6 +67,55 @@ function apiCall() {
 
   })
 }
+
+
+
+
+
+
+
+// async..await is not allowed in global scope, must use a wrapper
+async function main(message) {
+  // Generate test SMTP service account from ethereal.email
+  // Only needed if you don't have a real mail account for testing
+  // let testAccount = await nodemailer.createTestAccount();
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    // host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      // user: 'mallory.rosenbaum@ethereal.email', // generated ethereal user
+      user: process.env.MAIL_UN, // generated ethereal user
+      // pass: 'txNRfQjMA2aGzXtqnc', // generated ethereal password
+      pass: process.env.MAIL_PW, // generated ethereal password
+    },
+  });
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    // from: 'mallory.rosenbaum@ethereal.email', // sender address
+    from: 'imovertheinternet@gmail.com', // sender address
+    to: "eurofraid@gmail.com", // list of receivers
+    subject: "Spiritus Inventory Check", // Subject line
+    text: message, // plain text body
+    // text: "Hello world?", // plain text body
+    // html: "<b>Hello world?</b>", // html body
+    html: message, // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  // Preview only available when sending through an Ethereal account
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+}
+
+// main('nomg whatt').catch(console.error);
+
 
 
 

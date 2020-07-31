@@ -11,7 +11,7 @@ import {SocketioService} from "../socketio.service";
 })
 export class SpiritusComponent implements OnInit {
   // myWebSocket: WebSocketSubject<any> = webSocket('ws://localhost:3000');
-
+  messages = [];
   constructor(private socketService: SocketioService) {
 
   }
@@ -21,8 +21,11 @@ export class SpiritusComponent implements OnInit {
     //   console.log('some data from server', dataFromServer)
     // })
 
-    this.socketService.setupSocketConnection();
-
+    // this.socketService.setupSocketConnection();
+    this.socketService.spiritusMessages().subscribe(msg => {
+      console.log('got the msg inside component!', msg);
+      this.messages.push(msg);
+    });
     // this.apiService.getSpiritus().subscribe(res => console.log('subscirbe', res));
     // return this.http.get<any>('').subscribe(res => console.log('res', res));
   }
