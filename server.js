@@ -62,8 +62,15 @@ function apiCall() {
         // can remove this later just doing this so i get payload of array
         // main(currentItemList).catch(console.error);
       } else {
-        console.log('Spiritus: Inventory Changed, should be getting an email');
-        // console.log('INVENTORY ALERT: ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO'));
+        // console.log('Spiritus: Inventory Changed, should be getting an email');
+        for (let i = 0; i < inventoryChange.length; i++) {
+          let name = inventoryChange[i].title;
+          let oos = inventoryChange[i].outOfStock;
+          let productLink = inventoryChange[i].productLink;
+          console.log('Spiritus: INVENTORY CHANGE ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO')  + ' Product Link: ' + productLink);
+          // message += ("<b>Product Name: </b>" + name + (oos ? ' OUT OF STOCK :(' : ' IN STOCK') + ' Product Link: ' + productLink + " <br>") ;
+        }
+
         // io.emit('Spiritus Broadcast', ('INVENTORY ALERT: ' + name + ' is now ' + (oos ? 'out of stock :(' : 'IN STOCK -- GOGOGO')))
         main(inventoryChange).catch(console.error);
 
