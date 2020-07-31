@@ -1,10 +1,16 @@
-const app = require('express')();
+const path = require('path');
+const express = require('express');
+const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const cherrio = require("cheerio");
 const axios = require('axios');
 const nodemailer = require("nodemailer");
 require('dotenv').config();
+
+
+
+app.use(express.static(path.join(__dirname, '/dist/inventory-checker')));
 
 app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/dist/inventory-checker/index.html');
