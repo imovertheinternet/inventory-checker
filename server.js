@@ -94,22 +94,22 @@ async function main(bundle) {
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    // host: "smtp.ethereal.email",
+    // host: "smtp.gmail.com",
+    host: "smtp.ethereal.email",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      // user: 'mallory.rosenbaum@ethereal.email', // generated ethereal user
-      // pass: 'txNRfQjMA2aGzXtqnc', // generated ethereal password
-      user: process.env.MAIL_UN, // generated ethereal user
-      pass: process.env.MAIL_PW, // generated ethereal password
+      user: 'mallory.rosenbaum@ethereal.email', // generated ethereal user
+      pass: 'txNRfQjMA2aGzXtqnc', // generated ethereal password
+      // user: process.env.MAIL_UN, // generated ethereal user
+      // pass: process.env.MAIL_PW, // generated ethereal password
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    // from: 'mallory.rosenbaum@ethereal.email', // sender address
-    from: 'imovertheinternet@gmail.com',
+    from: 'mallory.rosenbaum@ethereal.email', // sender address
+    // from: 'imovertheinternet@gmail.com',
     to: "eurofraid@gmail.com",
     subject: "Spiritus Inventory Update 😍",
     text: message,
@@ -137,6 +137,15 @@ io.on('connection', (socket) => {
     io.emit('my broadcast', `server: ${msg}`)
   });
 });
+
+
+var reqTimer = setTimeout(function wakeUp() {
+  request("https://inventory-checker-spiritus.herokuapp.com", function() {
+    console.log("WAKE UP DYNO");
+  });
+  return reqTimer = setTimeout(wakeUp, 1200000);
+}, 1200000);
+
 
 http.listen(process.env.PORT || 3000, () => {
   console.log('listening on ', process.env.PORT || 3000);
