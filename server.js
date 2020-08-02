@@ -22,25 +22,25 @@ setInterval(apiCall, 60000);
 let previousItemList = [];
 
 function apiCall() {
-  axios.get('https://stickthison.com/collections/morale-patches').then(urlResponse => {
-    // axios.get('https://www.spiritussystems.com/shop-all/?sort=best-selling&page=1').then(urlResponse => {
+  // axios.get('https://stickthison.com/collections/morale-patches').then(urlResponse => {
+    axios.get('https://www.spiritussystems.com/shop-all/?sort=best-selling&page=1').then(urlResponse => {
     console.log('Spiritus: Making call');
     let currentItemList = [];
     const $ = cherrio.load(urlResponse.data);
 
-    // $('article.product-item').each((i, element) => {
-    // const productTitle = $(element).find("div.product-item-details h3 a").attr('title')
-    // const productLink = $(element).find("figure.product-item-thumbnail a").attr('href');
-    // const OOS = $(element).find("div.product-item-details div").hasClass('alert-message');
-    // currentItemList.push({title: productTitle, outOfStock: OOS, productLink: productLink});
+    $('article.product-item').each((i, element) => {
+    const productTitle = $(element).find("div.product-item-details h3 a").attr('title')
+    const productLink = $(element).find("figure.product-item-thumbnail a").attr('href');
+    const OOS = $(element).find("div.product-item-details div").hasClass('alert-message');
+    currentItemList.push({title: productTitle, outOfStock: OOS, productLink: productLink});
 
     /**
      * STICKTHISON SCRAPER
      */
-    $('div.one-third.column').each((i, element) => {
-      const productTitle = $(element).find("a div.info span.title").text();
-      const OOS = $(element).find("a div.info span.price span").hasClass('sold_out')
-      currentItemList.push({title: productTitle, outOfStock: OOS, productLink: 'N/A'});
+    // $('div.one-third.column').each((i, element) => {
+    //   const productTitle = $(element).find("a div.info span.title").text();
+    //   const OOS = $(element).find("a div.info span.price span").hasClass('sold_out')
+    //   currentItemList.push({title: productTitle, outOfStock: OOS, productLink: 'N/A'});
 
     })
 
@@ -94,22 +94,22 @@ async function main(bundle) {
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    // host: "smtp.gmail.com",
-    host: "smtp.ethereal.email",
+    host: "smtp.gmail.com",
+    // host: "smtp.ethereal.email",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'mallory.rosenbaum@ethereal.email', // generated ethereal user
-      pass: 'txNRfQjMA2aGzXtqnc', // generated ethereal password
-      // user: process.env.MAIL_UN, // generated ethereal user
-      // pass: process.env.MAIL_PW, // generated ethereal password
+      // user: 'mallory.rosenbaum@ethereal.email', // generated ethereal user
+      // pass: 'txNRfQjMA2aGzXtqnc', // generated ethereal password
+      user: process.env.MAIL_UN, // generated ethereal user
+      pass: process.env.MAIL_PW, // generated ethereal password
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'mallory.rosenbaum@ethereal.email', // sender address
-    // from: 'imovertheinternet@gmail.com',
+    // from: 'mallory.rosenbaum@ethereal.email', // sender address
+    from: 'imovertheinternet@gmail.com',
     to: "eurofraid@gmail.com",
     subject: "Spiritus Inventory Update 😍",
     text: message,
