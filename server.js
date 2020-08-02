@@ -140,9 +140,7 @@ io.on('connection', (socket) => {
 
 
 var reqTimer = setTimeout(function wakeUp() {
-  request("https://inventory-checker-spiritus.herokuapp.com", function() {
-    console.log("WAKE UP DYNO");
-  });
+  axios.get("https://inventory-checker-spiritus.herokuapp.com").then(r => console.log("WAKE UP DYNO"));
   return reqTimer = setTimeout(wakeUp, 1200000);
 }, 1200000);
 
